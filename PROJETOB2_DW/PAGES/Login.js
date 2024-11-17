@@ -13,36 +13,38 @@ export default function Login({ navigation }) {
   const handleLogin = async () => {
     if (!email || !senha) {
       setMessage('Por favor, preencha todos os campos.');
-      setMessageType('error'); // Tipo de mensagem: erro
+      setMessageType('error'); 
       return;
     }
 
     try {
-      // Verifica se o usuário existe na tabela 'Aluno'
-      const { data, error } = await supabase
-        .from('Aluno')
-        .select('*')  // Seleciona todos os campos
-        .eq('email', email)  // Verifica se o email corresponde
-        .eq('senha', senha)  // Verifica se a senha corresponde
-        .single();  // Espera apenas um resultado, já que o e-mail deve ser único
+      let { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: senha
+      })
 
-      if (error) {
-        setMessage('E-mail ou senha incorretos.');
-        setMessageType('error'); // Tipo de mensagem: erro
-      } else if (data) {
-        // Login bem-sucedido
-        setMessage('Login realizado com sucesso!');
-        setMessageType('success'); // Tipo de mensagem: sucesso
-
-        // Redireciona após 2 segundos
-        setTimeout(() => {
-          navigation.navigate('Main');
+      if (error) 
+      {
+        setMessage('E-mail ou senha incorretos.'); 
+        setMessageType('error'); 
+      } 
+      else if (data) 
+      {
+        setMessage('Login realizado com sucesso!'); 
+        setMessageType('success'); 
+        
+        
+        setTimeout(() => 
+        {
+          navigation.navigate('Main'); 
         }, 2000);
       }
-    } catch (err) {
-      setMessage('Houve um problema ao tentar fazer login. Tente novamente.');
-      setMessageType('error'); // Tipo de mensagem: erro
-      console.log('Erro inesperado:', err);
+    } 
+    catch (error) 
+    {
+      setMessage('Erro ao conectar ao servidor. Tente novamente mais tarde.');
+      setMessageType('error'); 
+      console.error(error); 
     }
   };
 
