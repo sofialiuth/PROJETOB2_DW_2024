@@ -7,6 +7,7 @@ import Main from './PAGES/Main';
 import Login from './PAGES/Login';
 import Forgot from './PAGES/Forgot';
 import Register from './PAGES/Register';
+import ResetPassword from './PAGES/ResetPassword';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Stack.Screen name="Forgot" component={Forgot} options={{ headerShown: false }}/>
         <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
         <Stack.Screen name="Main" component={Main} options={{ headerShown: false }}/>
+        <Stack.Screen name="ResetPassword" component={ResetPassword} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
