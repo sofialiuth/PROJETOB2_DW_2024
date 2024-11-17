@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import { supabase } from '../supabase';
