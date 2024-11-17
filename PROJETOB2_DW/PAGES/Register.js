@@ -9,10 +9,12 @@ export default function Register({ navigation }) {
   const [senha, setSenha] = useState('');
   const [message, setMessage] = useState(''); // Estado para mensagens de erro ou sucesso
   const [messageType, setMessageType] = useState(''); // Estado para definir o tipo de mensagem ('success' ou 'error')
-
-  // Função de autenticação
+  const isValidEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+  
   const handleRegister = async () => {
-    // Limpa a mensagem anterior
     setMessage('');
     setMessageType('');
 
@@ -22,38 +24,34 @@ export default function Register({ navigation }) {
       setMessageType('error');
       return;
     }
+    if (!isValidEmail(email)) {
+      setMessage('Por favor, insira um e-mail válido.');
+      setMessageType('error');
+      return;
+    }
 
     try {
-      // Inserir o aluno na tabela 'Aluno' do Supabase
-      const { data, error } = await supabase
-        .from('Aluno')
-        .insert([
-          {
-            email: email,
-            senha: senha,
-            nome_completo: nomeCompleto,
-          },
-        ]);
+      let { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: senha,
+      })
 
       if (error) {
-        console.log('Erro Supabase:', error.message);
-        if (error.message.includes('Row-level security policy')) {
-          setMessage('Falha no registro devido a políticas de segurança da tabela.');
-        } else {
-          setMessage('Houve um problema ao criar sua conta. Tente novamente.');
-        }
+        setMessage(error.message);
         setMessageType('error');
-      } else {
-        setMessage('Conta criada com sucesso!');
-        setMessageType('success');
-        setTimeout(() => {
-          navigation.navigate('Login'); // Navega para a tela de login
-        }, 2000); // Tempo para exibir a mensagem antes de redirecionar
+        return;
       }
-    } catch (err) {
-      console.log('Erro inesperado:', err);
-      setMessage('Erro inesperado. Por favor, tente novamente mais tarde.');
-      setMessageType('error');
+
+      setMessage('Conta criada com sucesso!');
+      setMessageType('success');
+      setTimeout(() => {
+          navigation.navigate('Login'); 
+      }, 2000); 
+    } 
+    catch (error) 
+    {
+      console.error(error);
+      setMessage(error.message);
     }
   };
 
