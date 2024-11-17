@@ -19,16 +19,25 @@ export default function Forgot({ navigation }){
     }
 
     try {
-      let { error } = await supabase.auth.resetPasswordForEmail(email);
+      let { data, error } = await supabase.auth.resetPasswordForEmail(email);
 
-      if (error) {
+      if (error) 
+      {
         setMessage('Não foi possível enviar o email de redefinição. Verifique o endereço e tente novamente.');
         setMessageType('error');
-      } else {
+      } 
+      else if(data) 
+      {
         setMessage('Um link de redefinição de senha foi enviado para o seu email.');
         setMessageType('success');
+        setTimeout(() => 
+        {
+          navigation.navigate('ResetPassword'); // Navega para a página principal.
+        }, 2000);
       }
-    } catch (error) {
+    } 
+    catch (error) 
+    {
       setMessage('Erro ao conectar ao servidor. Tente novamente mais tarde.');
       setMessageType('error');
       console.error(error);
